@@ -14,6 +14,9 @@ from decimal import Decimal
 from typing import Any
 
 CONTRACT = 1
+#: A key of the manifest's `logos`: Securo serves the file from the package, so
+#: showing it never sends anyone's browser to a host the manifest doesn't declare.
+INSTITUTION_LOGO = "wise"
 #: The contract takes at most 8 decimals; Securo stores 2 for money.
 _PLACES = Decimal("0.00000001")
 
@@ -48,6 +51,9 @@ def account(profile: dict[str, Any], balance: dict[str, Any]) -> dict[str, Any]:
         "type": "savings" if balance.get("type") == "SAVINGS" else "checking",
         "balance": number(balance["amount"]["value"]),
         "currency": balance["currency"],
+        # The logo alone, no institution name: Securo would show the name in
+        # place of each account's own, and every balance would read "Wise".
+        "institution_logo": INSTITUTION_LOGO,
         # Not fetched yet (null keeps what Securo has); `[]` would say there are none.
         "transactions": None,
     }

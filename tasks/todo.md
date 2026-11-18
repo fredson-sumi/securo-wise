@@ -51,7 +51,7 @@ From those samples, the task writes the findings to `docs/wise-api.md` and build
 **Acceptance criteria:**
 - [x] The manifest passes Securo's own parser. Run `parse_manifest` from the Securo backend's virtualenv against it.
 - [x] `sync` with no token raises `NeedsAuth`.
-- Not done: `icon.png` and the `logos` entry. Securo needs a Wise logo the author has the right to ship. Until then, accounts show no logo and the catalog shows a generated badge.
+- [x] `icon.png` and `logos/wise.png`: Wise's own 256 px app icon from wise.com, named by every account (`institution_logo: "wise"`).
 
 **Verification:**
 - [ ] Tests pass.

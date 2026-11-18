@@ -36,5 +36,6 @@
         "provides": ["accounts", "transactions"]
       }
     ]
-  }
+  },
+  "logos": { "wise": "logos/wise.png" }
 }

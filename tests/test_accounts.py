@@ -1,13 +1,15 @@
 """Balances become accounts. Made-up fixtures only (D3)."""
 from __future__ import annotations
 
+import json
 from decimal import Decimal
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
 from securo_wise.errors import NeedsAuth, WiseError
-from securo_wise.payload import account, account_id, number
+from securo_wise.payload import INSTITUTION_LOGO, account, account_id, number
 from securo_wise.plugin import Wise
 from tests.fake_wise import FakeWise, load
 
@@ -39,6 +41,22 @@ def test_the_same_currency_in_two_profiles_is_two_accounts():
     result, _ = sync()
     usd = [a["external_id"] for a in result["data"]["accounts"] if a["currency"] == "USD"]
     assert usd == ["wise:10000001:50000012", "wise:10000002:50000021"]
+
+
+def test_every_account_shows_the_wise_logo_and_keeps_its_own_name():
+    result, _ = sync()
+    for record in result["data"]["accounts"]:
+        assert record["institution_logo"] == INSTITUTION_LOGO
+        assert "institution_name" not in record  # Securo would show it in place of the account's name
+
+
+def test_the_logo_accounts_name_is_a_small_png_the_package_ships():
+    root = Path(__file__).resolve().parent.parent
+    manifest = json.loads((root / "securo-plugin.json").read_text())
+    for image in (root / manifest["logos"][INSTITUTION_LOGO], root / "icon.png"):
+        data = image.read_bytes()
+        assert data.startswith(b"\x89PNG\r\n\x1a\n")
+        assert len(data) <= 64 * 1024  # the catalog's limit for icon.png, the stricter of the two
 
 
 def test_transactions_are_not_sent_yet():

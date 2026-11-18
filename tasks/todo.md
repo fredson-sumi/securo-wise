@@ -122,9 +122,9 @@ Amounts go out as strings with at most 8 decimals.
 ---
 
 ## Checkpoint A: Accounts in a real Securo
-- [ ] All tests pass.
-- [ ] Both profiles' balances appear in Securo under Bank Connections, with the Wise logo and the correct amounts.
-- [ ] Review with the author before continuing.
+- [x] All tests pass.
+- [x] Both profiles' balances appear in Securo under Bank Connections, with the Wise logo and the correct amounts.
+- [x] Review with the author before continuing.
 
 ---
 
@@ -205,9 +205,9 @@ An activity the plugin can't place on an account fails the sync with a clear mes
 ---
 
 ## Checkpoint B: Recent transactions correct
-- [ ] All tests pass.
-- [ ] For the last 30 days, every Wise activity in both profiles appears once in Securo, with the right account, sign, amount and date.
-- [ ] Review with the author before continuing.
+- [x] All tests pass.
+- [x] For the last 30 days, every Wise activity in both profiles appears once in Securo, with the right account, sign, amount and date.
+- [x] Review with the author before continuing.
 
 ---
 

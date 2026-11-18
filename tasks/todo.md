@@ -140,8 +140,8 @@ Amounts go out as strings with at most 8 decimals.
 Parsing is strict: an amount it doesn't recognise raises an error naming the format with its digits masked. It never guesses.
 
 **Acceptance criteria:**
-- [ ] Every format in the T1 fixtures parses, including thousands separators, no decimals, and the tagged positive form.
-- [ ] An unknown format fails with a masked message.
+- [x] Every format in the T1 fixtures parses, including thousands separators, no decimals, and the tagged positive form.
+- [x] An unknown format fails with a masked message.
 
 **Verification:**
 - [ ] Tests pass.
@@ -167,8 +167,10 @@ Parsing is strict: an amount it doesn't recognise raises an error naming the for
 An activity the plugin can't place on an account fails the sync with a clear message instead of being dropped silently.
 
 **Acceptance criteria:**
-- [ ] Card payments, deposits, transfers and `BANK_DETAILS_ORDER` from the fixtures land on the expected accounts with the expected signs.
-- [ ] The same feed mapped twice gives identical external ids.
+- [x] Card payments, deposits, transfers and `BANK_DETAILS_ORDER` from the fixtures land on the expected accounts with the expected signs. Conversions and Jar moves (`INTERBALANCE`) become a debit plus a `:in` credit; unfunded and cancelled transfers are left out.
+- [x] On the author's real account, each account's transactions add up exactly to its Wise balance (24 transactions). In the sandbox, the Jar's 108 moves add up exactly too.
+- Decided: `amount` is what the balance moved, in the account's currency (no `amount_in_account_currency`), and the date is the UTC day of `createdOn`.
+- [x] The same feed mapped twice gives identical external ids, and an item repeated across pages counts once.
 
 **Verification:**
 - [ ] Tests pass.

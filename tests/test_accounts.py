@@ -59,11 +59,6 @@ def test_the_logo_accounts_name_is_a_small_png_the_package_ships():
         assert len(data) <= 64 * 1024  # the catalog's limit for icon.png, the stricter of the two
 
 
-def test_transactions_are_not_sent_yet():
-    result, _ = sync()
-    assert all(a["transactions"] is None for a in result["data"]["accounts"])  # null keeps what Securo has
-
-
 def test_it_asks_for_jars_as_well_as_currency_balances():
     _, fake = sync()
     assert "/v4/profiles/10000001/balances?types=STANDARD,SAVINGS" in fake.requests

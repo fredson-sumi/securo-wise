@@ -12,8 +12,8 @@ from __future__ import annotations
 import time
 from typing import Any, Callable
 
-from securo_wise import payload
-from securo_wise.client import API, Http, WiseClient
+from securo_wise import activity, mapping, payload
+from securo_wise.client import API, Http, OutOfTime, WiseClient
 from securo_wise.errors import NeedsAuth, WiseError
 
 #: Wise tokens are short; anything this long is a paste gone wrong.
@@ -47,6 +47,44 @@ def profiles_with_balances(wise: WiseClient) -> list[tuple[dict[str, Any], list[
     return result
 
 
+ACTIVITY_PAGE = 100
+
+
+def activities(wise: WiseClient, profile_id: Any) -> list[dict[str, Any]]:
+    """Every activity of a profile, following the feed's cursor.
+
+    The feed isn't in date order (docs/wise-api.md), so it is read to the end.
+    When the call runs out of time, what was read so far is returned: each
+    transaction is upserted by its id, so the next sync loses nothing.
+    """
+    items: list[dict[str, Any]] = []
+    cursor = None
+    while True:
+        try:
+            page = wise.get(f"/v1/profiles/{profile_id}/activities", {"size": ACTIVITY_PAGE, "nextCursor": cursor})
+        except OutOfTime:
+            return items
+        if not isinstance(page, dict) or not isinstance(page.get("activities"), list):
+            raise WiseError("Wise answered /v1/profiles/{id}/activities with something this plugin doesn't know.")
+        items.extend(page["activities"])
+        cursor = page.get("cursor")
+        if not cursor:
+            return items
+
+
+def transactions_by_account(
+    wise: WiseClient, profiles: list[tuple[dict[str, Any], list[dict[str, Any]]]]
+) -> dict[str, list[dict[str, Any]]]:
+    result: dict[str, dict[str, dict[str, Any]]] = {}
+    for profile, balances in profiles:
+        lookup = mapping.Balances(profile["id"], balances)
+        for item in activities(wise, profile["id"]):
+            for account_key, record in mapping.transactions(activity.parse(item), lookup):
+                # A page boundary can repeat an item; Securo refuses a list with the same id twice.
+                result.setdefault(account_key, {})[record["external_id"]] = record
+    return {key: list(records.values()) for key, records in result.items()}
+
+
 class Wise:
     def __init__(self, *, http: Http | None = None, api: str = API, clock: Callable[[], float] = time.monotonic) -> None:
         self._http = http
@@ -60,8 +98,9 @@ class Wise:
     def sync(self, params: dict[str, Any], context: Any) -> dict[str, Any]:
         wise = self.client(context)
         state = dict(params.get("state") or {})
-        # Transactions arrive in later tasks (T6): accounts carry `transactions: null` until then.
-        return {"state": state, "data": payload.build(profiles_with_balances(wise))}
+        profiles = profiles_with_balances(wise)
+        # The whole feed every time for now; resuming a long history across syncs is T8.
+        return {"state": state, "data": payload.build(profiles, transactions_by_account(wise, profiles))}
 
 
 plugin = Wise()

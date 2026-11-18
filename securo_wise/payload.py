@@ -43,8 +43,9 @@ def account_name(profile: dict[str, Any], balance: dict[str, Any]) -> str:
     return f"{label} {currency}"
 
 
-def account(profile: dict[str, Any], balance: dict[str, Any]) -> dict[str, Any]:
-    """One balance as a contract account; transactions are added separately."""
+def account(profile: dict[str, Any], balance: dict[str, Any],
+            transactions: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """One balance as a contract account, with the transactions fetched for it (None: not fetched)."""
     return {
         "external_id": account_id(profile["id"], balance["id"]),
         "name": account_name(profile, balance),
@@ -54,14 +55,26 @@ def account(profile: dict[str, Any], balance: dict[str, Any]) -> dict[str, Any]:
         # The logo alone, no institution name: Securo would show the name in
         # place of each account's own, and every balance would read "Wise".
         "institution_logo": INSTITUTION_LOGO,
-        # Not fetched yet (null keeps what Securo has); `[]` would say there are none.
-        "transactions": None,
+        # None: not fetched, Securo keeps what it has. A list is upserted by
+        # external id; transactions missing from it are left alone.
+        "transactions": transactions,
     }
 
 
-def build(profiles: list[tuple[dict[str, Any], list[dict[str, Any]]]]) -> dict[str, Any]:
-    """The contract payload for each profile with its balances."""
+def build(
+    profiles: list[tuple[dict[str, Any], list[dict[str, Any]]]],
+    transactions: dict[str, list[dict[str, Any]]] | None = None,
+) -> dict[str, Any]:
+    """The contract payload: each profile's balances, with `transactions` keyed by account external id.
+
+    Without `transactions`, accounts carry none (not fetched). With it, an
+    account that had no activity gets `[]`.
+    """
     return {
         "contract": CONTRACT,
-        "accounts": [account(profile, balance) for profile, balances in profiles for balance in balances],
+        "accounts": [
+            account(profile, balance,
+                    None if transactions is None else transactions.get(account_id(profile["id"], balance["id"]), []))
+            for profile, balances in profiles for balance in balances
+        ],
     }

@@ -210,11 +210,13 @@ An activity the plugin can't place on an account fails the sync with a clear mes
 **Description:** The first sync walks the feed back to the oldest activity within a budget of about 40 s and fewer than 20,000 transactions per reply. It keeps the paging cursor in `state["backfill"]` and continues on the next sync until the feed is exhausted. Records from each batch are sent as they are fetched.
 
 **Acceptance criteria:**
-- [ ] With a fake clock and transport, a long history is fetched over several calls with nothing missed or repeated.
-- [ ] A sync interrupted before its records are written resumes from the previous cursor. Securo only keeps `state` after a successful write, and a test covers this.
+- [x] With a fake clock and transport, a long history is fetched over several calls with nothing missed or repeated.
+- [x] A sync interrupted before its records are written resumes from the previous cursor. Securo only keeps `state` after a successful write, and a test covers this.
 
 **Verification:**
-- [ ] Tests pass.
+- [x] Tests pass.
+
+- Checked live: in the sandbox, a read capped after page 1 resumed from Wise's own cursor, and the two syncs equal one full read (223 transactions). A saved cursor Wise refuses restarts the read from the start.
 
 **Dependencies:** T7
 
@@ -229,11 +231,13 @@ An activity the plugin can't place on an account fails the sync with a clear mes
 **Description:** Once the backfill is complete, each sync re-reads activities from Securo's `since` minus an overlap margin, so that pending activities that complete or are cancelled get updated. A cancelled activity that was already synced as pending is handled as decided in `DESIGN.md`, for example sent as posted with zero amount, or left for Securo to expire.
 
 **Acceptance criteria:**
-- [ ] A pending activity that later completes ends up as one posted transaction.
-- [ ] Running the same sync twice returns the same records.
+- [x] A pending activity that later completes ends up as one posted transaction.
+- [x] Running the same sync twice returns the same records.
 
 **Verification:**
-- [ ] Tests pass.
+- [x] Tests pass.
+
+- Built: later syncs re-read from the last complete read less 30 days, using Wise's `since` filter, which was checked live on the real account. Pending transactions are tracked in `state.pending`; one that Wise cancels is sent again as a posted 0 with "(cancelled)" appended, because the contract can't delete.
 
 **Dependencies:** T8
 

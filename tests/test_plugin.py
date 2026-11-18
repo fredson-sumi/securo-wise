@@ -38,8 +38,8 @@ def test_something_that_is_not_a_token_needs_auth(value):
 
 def test_a_token_with_surrounding_spaces_is_accepted():
     fake = FakeWise()
-    result = Wise(http=fake).sync({"state": {"kept": 1}}, _context({"token": "  0000-fake-token  "}))
-    assert result["state"] == {"kept": 1} and result["data"]["contract"] == 1
+    result = Wise(http=fake).sync({"state": {}}, _context({"token": "  0000-fake-token  "}))
+    assert set(result["state"]["profiles"]) == {"10000001", "10000002"} and result["data"]["contract"] == 1
     assert fake.requests[0] == "/v2/profiles"
 
 

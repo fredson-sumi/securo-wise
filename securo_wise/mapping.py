@@ -100,6 +100,11 @@ def _record(external_id: str, activity: Activity, value, currency: str, kind: st
     }
 
 
+def transaction_ids(profile_id: Any, activity: Activity) -> list[str]:
+    """Every id an activity can produce, whatever its status: to find one sent earlier as pending."""
+    return [transaction_id(profile_id, activity), transaction_id(profile_id, activity, ":in")]
+
+
 def transactions(activity: Activity, balances: Balances) -> list[tuple[str, dict[str, Any]]]:
     """(account external id, contract transaction) pairs for one activity; none when it moved no money."""
     if activity.status is None:

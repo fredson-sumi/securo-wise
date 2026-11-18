@@ -35,6 +35,15 @@
         "sync_minutes": 60,
         "provides": ["accounts", "transactions"]
       }
+    ],
+    "rules": [
+      {
+        "key": "wise-own-balances",
+        "name": "Wise: money between your own balances is a transfer",
+        "conditions_op": "and",
+        "conditions": [{ "field": "description", "op": "starts_with", "value": "Wise: " }],
+        "actions": [{ "op": "set_category", "value": "transfers" }]
+      }
     ]
   },
   "logos": { "wise": "logos/wise.png" }

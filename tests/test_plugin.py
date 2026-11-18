@@ -10,6 +10,7 @@ import pytest
 
 from securo_wise import __version__
 from securo_wise.errors import HELP_URL, NeedsAuth
+from securo_wise.mapping import OWN_BALANCES_PREFIX
 from securo_wise.plugin import Wise, plugin
 from tests.fake_wise import FakeWise
 
@@ -58,3 +59,9 @@ def test_versions_agree():
     pyproject = (ROOT / "pyproject.toml").read_text()
     assert f'version = "{MANIFEST["version"]}"' in pyproject
     assert __version__ == MANIFEST["version"]  # it goes out in the User-Agent
+
+
+def test_the_manifest_files_moves_between_own_balances_under_transfers():
+    (rule,) = MANIFEST["contributes"]["rules"]
+    assert rule["conditions"] == [{"field": "description", "op": "starts_with", "value": OWN_BALANCES_PREFIX}]
+    assert rule["actions"] == [{"op": "set_category", "value": "transfers"}]  # Securo's own, treated as a transfer

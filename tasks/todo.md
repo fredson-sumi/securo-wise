@@ -183,24 +183,18 @@ An activity the plugin can't place on an account fails the sync with a clear mes
 
 ---
 
-## Task 7: Transfer enrichment and conversions
+## Task 7: Conversions as transfers, and fees
 
-**Description:** For activities whose resource is a TRANSFER, fetch `/v1/transfers/{id}` and use its exact source and target amounts, currencies and fees. A conversion between two balances becomes two transactions, a debit on the source account and a credit on the target, with ids `…:<activityId>` and `…:<activityId>:in`. The task decides how Securo should treat conversions (as transfers or not) and records it in `DESIGN.md`. It also settles the `provider_category` open question.
+**Description (revised after T1):** The feed already gives exact amounts, so transfer details are no longer needed for them. What was left:
+- **Conversions and Jar moves** must not count as spending and income. Securo pairs transfers by exact amount, which pairs Jar moves but never a conversion's two legs.
+- **The fee** inside a send should be recorded somewhere.
 
 **Acceptance criteria:**
-- [ ] A conversion in the fixtures produces both sides with exact amounts.
-- [ ] Transfer fees are shown as recorded in `DESIGN.md`, either part of the debit or a separate transaction.
-- [ ] A failed detail fetch falls back to the feed's amounts, or fails the sync, as `DESIGN.md` decides. It is never silent.
-
-**Verification:**
-- [ ] Tests pass.
-- [ ] Manual check (Checkpoint B): recent transactions in Securo match the Wise app for both profiles.
+- [x] Moves between the person's own balances are described `Wise: converted EUR to USD` / `Wise: moved EUR balance to Holiday Jar`. The manifest ships the rule `wise-own-balances` (description starts with `Wise: ` → Securo's built-in `transfers` category, which has `treat_as_transfer`). Upstream Securo and the QA instance both accept the manifest.
+- [x] No other transaction gets the `Wise: ` prefix (covered by a test).
+- [x] A same-currency send stays one transaction for the whole amount that left the balance. The fee (`secondaryAmount − primaryAmount`) is kept in `raw_data.fee`. A cross-currency send's fee isn't comparable from the feed, so it is left out rather than fetched from the quote, which Wise sometimes refuses.
 
 **Dependencies:** T6
-
-**Files likely touched:** `securo_wise/client.py`, `securo_wise/mapping.py`, `tests/test_transfers.py`, `DESIGN.md`
-
-**Estimated scope:** Medium
 
 ---
 

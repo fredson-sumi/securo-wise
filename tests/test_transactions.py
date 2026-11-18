@@ -8,7 +8,7 @@ import pytest
 
 from securo_wise.activity import parse
 from securo_wise.errors import WiseError
-from securo_wise.mapping import Balances, transactions
+from securo_wise.mapping import OWN_BALANCES_PREFIX, Balances, transactions
 from securo_wise.plugin import Wise
 from tests.fake_wise import FakeWise, load
 
@@ -70,22 +70,22 @@ def _edge(index: int) -> list[tuple[str, tuple]]:
 
 def test_money_into_a_jar_leaves_the_currency_balance_and_reaches_the_jar():
     assert _edge(0) == [
-        ("wise:10000001:51000001", ("wise:10000001:edge-0001", "debit", "40", "EUR", "Moved to Holiday", None)),
-        ("wise:10000001:51000004", ("wise:10000001:edge-0001:in", "credit", "40", "EUR", "Moved to Holiday", None)),
+        ("wise:10000001:51000001", ("wise:10000001:edge-0001", "debit", "40", "EUR", "Wise: moved EUR balance to Holiday Jar", None)),
+        ("wise:10000001:51000004", ("wise:10000001:edge-0001:in", "credit", "40", "EUR", "Wise: moved EUR balance to Holiday Jar", None)),
     ]
 
 
 def test_money_out_of_a_jar_goes_back_to_the_currency_balance():
     assert _edge(1) == [
-        ("wise:10000001:51000004", ("wise:10000001:edge-0002", "debit", "15", "EUR", "Moved to EUR", None)),
-        ("wise:10000001:51000001", ("wise:10000001:edge-0002:in", "credit", "15", "EUR", "Moved to EUR", None)),
+        ("wise:10000001:51000004", ("wise:10000001:edge-0002", "debit", "15", "EUR", "Wise: moved Holiday Jar to EUR balance", None)),
+        ("wise:10000001:51000001", ("wise:10000001:edge-0002:in", "credit", "15", "EUR", "Wise: moved Holiday Jar to EUR balance", None)),
     ]
 
 
 def test_a_conversion_leaves_one_currency_and_arrives_in_the_other():
     assert _edge(2) == [
-        ("wise:10000001:51000001", ("wise:10000001:edge-0003", "debit", "50", "EUR", "Moved to USD", None)),
-        ("wise:10000001:51000002", ("wise:10000001:edge-0003:in", "credit", "54.62", "USD", "Moved to USD", None)),
+        ("wise:10000001:51000001", ("wise:10000001:edge-0003", "debit", "50", "EUR", "Wise: converted EUR to USD", None)),
+        ("wise:10000001:51000002", ("wise:10000001:edge-0003:in", "credit", "54.62", "USD", "Wise: converted EUR to USD", None)),
     ]
     assert _edge(3)[0][0] == "wise:10000001:51000003" and _edge(3)[1][0] == "wise:10000001:51000001"  # GBP -> EUR
 
@@ -143,3 +143,18 @@ def test_running_out_of_time_keeps_what_was_read():
     assert "wise:10000002:activity-0003" in accounts["wise:10000002:50000021"]  # from the first page
     assert "wise:10000002:activity-0008" not in accounts["wise:10000002:50000022"]  # on the page never read
     assert not any("nextCursor" in r for r in fake.requests)
+
+
+def test_only_moves_between_own_balances_get_the_prefix_the_transfer_rule_matches():
+    descriptions = [t["description"] for a in sync()["accounts"] for t in a["transactions"]]
+    assert not any(d.startswith(OWN_BALANCES_PREFIX) for d in descriptions)  # payments, sends, fees: no
+    moves = [record["description"] for i in range(4) for _, record in transactions(parse(EDGE["activities"][i]), Balances(1, EDGE["balances"]))]
+    assert all(d.startswith(OWN_BALANCES_PREFIX) for d in moves)
+
+
+def test_the_fee_of_a_same_currency_send_is_noted_but_the_amount_stays_whole():
+    data = sync()
+    sent = next(t for a in data["accounts"] for t in a["transactions"] if t["external_id"] == "wise:10000001:activity-0001")
+    assert (sent["amount"], sent["raw_data"]["fee"]) == ("1204.85", "4.85")
+    cross = next(t for a in data["accounts"] for t in a["transactions"] if t["external_id"] == "wise:10000002:activity-0006")
+    assert "fee" not in cross["raw_data"]  # USD out, BRL sent: not comparable here

@@ -65,6 +65,26 @@ class Balances:
         return others[0]
 
 
+#: Every move between the person's own balances is described with this prefix,
+#: and the manifest's rule files those under Securo's Transfers category, which
+#: keeps them out of spending and income. Securo pairs a transfer only when
+#: both legs have the same amount, which a conversion's legs never do.
+OWN_BALANCES_PREFIX = "Wise: "
+
+
+def _label(balance: dict[str, Any]) -> str:
+    if balance.get("type") == "SAVINGS":
+        return f"{(balance.get('name') or 'Jar').strip()} Jar"
+    return f"{balance['currency']} balance"
+
+
+def own_balances_description(source: dict[str, Any], destination: dict[str, Any]) -> str:
+    """"Wise: converted EUR to USD", "Wise: moved EUR balance to Holiday Jar"."""
+    if source["currency"] != destination["currency"]:
+        return f"{OWN_BALANCES_PREFIX}converted {source['currency']} to {destination['currency']}"
+    return f"{OWN_BALANCES_PREFIX}moved {_label(source)} to {_label(destination)}"
+
+
 def _record(external_id: str, activity: Activity, value, currency: str, kind: str, description: str) -> dict[str, Any]:
     return {
         "external_id": external_id,
@@ -90,7 +110,23 @@ def transactions(activity: Activity, balances: Balances) -> list[tuple[str, dict
     balance = balances.standard_for(moved.currency, activity)
     kind = "credit" if activity.incoming else "debit"
     record = _record(transaction_id(balances.profile_id, activity), activity, moved.value, moved.currency, kind, activity.title)
+    fee = _fee(activity)
+    if fee is not None:
+        record["raw_data"]["fee"] = number(fee)
     return [(balances.account(balance), record)]
+
+
+def _fee(activity: Activity):
+    """Wise's fee on a same-currency send: what left the balance less what was sent.
+
+    One transaction keeps the whole amount (it is one movement of the balance);
+    the fee goes in `raw_data` for reference. On a cross-currency send the
+    two amounts are in different currencies, so the fee isn't known here.
+    """
+    if activity.incoming or activity.secondary is None or activity.secondary.currency != activity.primary.currency:
+        return None
+    fee = activity.secondary.value - activity.primary.value
+    return fee if fee >= 0 else None
 
 
 def _move(activity: Activity, balances: Balances) -> list[tuple[str, dict[str, Any]]]:
@@ -107,10 +143,10 @@ def _move(activity: Activity, balances: Balances) -> list[tuple[str, dict[str, A
     else:
         source = balances.other_in_currency(destination, activity)  # into or out of a Jar
     left = activity.balance_amount
-    label = destination.get("name") if destination.get("type") == "SAVINGS" else destination["currency"]
-    out = _record(transaction_id(balances.profile_id, activity), activity, left.value, left.currency, "debit", f"Moved to {label}")
+    description = own_balances_description(source, destination)
+    out = _record(transaction_id(balances.profile_id, activity), activity, left.value, left.currency, "debit", description)
     arrived = _record(transaction_id(balances.profile_id, activity, ":in"), activity, activity.primary.value,
-                      activity.primary.currency, "credit", f"Moved to {label}")
+                      activity.primary.currency, "credit", description)
     for record in (out, arrived):
         record["payee"] = None  # money between the person's own balances has no payee
     return [(balances.account(source), out), (balances.account(destination), arrived)]

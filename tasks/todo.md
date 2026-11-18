@@ -277,10 +277,10 @@ An activity the plugin can't place on an account fails the sync with a clear mes
 - [x] The transaction count and totals per account match Wise's activity list for the whole history.
 - [x] A second "Sync now" adds and changes nothing.
 
-- Checked against Wise's own API on 2026-11-18: 24 transactions, all 5 balances add up, and a second sync from the returned state re-sends 5 identical records. Securo's parser accepts both replies. Still to do: the author's check in the QA UI with the final commit (`23c3869`).
+- Checked against Wise's own API on 2026-11-18: 24 transactions, all 5 balances add up, and a second sync from the returned state re-sends 5 identical records. Securo's parser accepts both replies. The author then checked it in the QA UI with the final commit (`23c3869`) and it works.
 
 **Verification:**
-- [ ] Manual check by the author.
+- [x] Manual check by the author.
 
 **Dependencies:** T10
 
@@ -291,6 +291,6 @@ An activity the plugin can't place on an account fails the sync with a clear mes
 ---
 
 ## Checkpoint C: Complete
-- [ ] All acceptance criteria met.
-- [ ] Tests pass.
-- [ ] Ready to publish a release, if the author wants to.
+- [x] All acceptance criteria met.
+- [x] Tests pass.
+- [x] Ready to publish a release, if the author wants to.

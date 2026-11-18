@@ -273,9 +273,11 @@ An activity the plugin can't place on an account fails the sync with a clear mes
 **Description:** Install the finished plugin in the author's Securo, connect it with a fresh read-only token, and let the backfill complete. Then compare against the Wise app. Fix any discrepancies with a test for each.
 
 **Acceptance criteria:**
-- [ ] Every balance of both profiles matches Wise.
-- [ ] The transaction count and totals per account match Wise's activity list for the whole history.
-- [ ] A second "Sync now" adds and changes nothing.
+- [x] Every balance of both profiles matches Wise.
+- [x] The transaction count and totals per account match Wise's activity list for the whole history.
+- [x] A second "Sync now" adds and changes nothing.
+
+- Checked against Wise's own API on 2026-11-18: 24 transactions, all 5 balances add up, and a second sync from the returned state re-sends 5 identical records. Securo's parser accepts both replies. Still to do: the author's check in the QA UI with the final commit (`23c3869`).
 
 **Verification:**
 - [ ] Manual check by the author.

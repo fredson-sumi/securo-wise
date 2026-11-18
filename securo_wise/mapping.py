@@ -2,9 +2,9 @@
 
 One-sided activities (card payments, transfers, deposits, fees...) move one
 balance by their balance-side amount: on the real account, adding these up
-per currency gave Wise's balances exactly. `INTERBALANCE` activities
+per currency gave Wise's balances exactly (D5). `INTERBALANCE` activities
 (conversions and Jar moves) move two balances: a debit on the source and a
-credit on the destination, which the title names ("To <Jar name>" / "To EUR").
+credit on the destination, which the title names ("To <Jar name>" / "To EUR") (D7).
 
 An activity the plugin can't place on exactly one balance fails the sync,
 naming why: a guess would put money on the wrong account.
@@ -21,7 +21,7 @@ INTERBALANCE = "INTERBALANCE"
 
 
 def transaction_id(profile_id: Any, activity: Activity, suffix: str = "") -> str:
-    """`wise:<profile>:<activity>` (`:in` for the credit side of a move). Fixed once shipped."""
+    """`wise:<profile>:<activity>` (`:in` for the credit side of a move). Fixed once shipped (D4)."""
     return f"wise:{profile_id}:{activity.id}{suffix}"
 
 
@@ -68,7 +68,7 @@ class Balances:
 #: Every move between the person's own balances is described with this prefix,
 #: and the manifest's rule files those under Securo's Transfers category, which
 #: keeps them out of spending and income. Securo pairs a transfer only when
-#: both legs have the same amount, which a conversion's legs never do.
+#: both legs have the same amount, which a conversion's legs never do (D8).
 OWN_BALANCES_PREFIX = "Wise: "
 
 
@@ -122,7 +122,7 @@ def transactions(activity: Activity, balances: Balances) -> list[tuple[str, dict
 
 
 def _fee(activity: Activity):
-    """Wise's fee on a same-currency send: what left the balance less what was sent.
+    """Wise's fee on a same-currency send: what left the balance less what was sent (D9).
 
     One transaction keeps the whole amount (it is one movement of the balance);
     the fee goes in `raw_data` for reference. On a cross-currency send the

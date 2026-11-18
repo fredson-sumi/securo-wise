@@ -1,4 +1,4 @@
-"""Read-only GETs to the Wise API, with Wise's failures mapped onto what Securo understands.
+"""Read-only GETs to the Wise API, with Wise's failures mapped onto what Securo understands (D13).
 
 Every request carries the token as a bearer header and a `User-Agent` of its
 own: Cloudflare in front of Wise refuses Python's default (error 1010).

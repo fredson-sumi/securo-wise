@@ -65,3 +65,13 @@ def test_the_manifest_files_moves_between_own_balances_under_transfers():
     (rule,) = MANIFEST["contributes"]["rules"]
     assert rule["conditions"] == [{"field": "description", "op": "starts_with", "value": OWN_BALANCES_PREFIX}]
     assert rule["actions"] == [{"op": "set_category", "value": "transfers"}]  # Securo's own, treated as a transfer
+
+
+def test_every_decision_the_code_cites_is_in_design_md():
+    import re
+
+    design = (ROOT / "DESIGN.md").read_text()
+    documented = set(re.findall(r"^\| (D\d+) \|", design, re.M))
+    cited = {d for path in (ROOT / "securo_wise").glob("*.py") for d in re.findall(r"\((D\d+)\)", path.read_text())}
+    assert cited and cited <= documented
+    assert documented - cited <= {"D2", "D3"}  # policies about the repo, not the code

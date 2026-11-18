@@ -6,7 +6,7 @@ formats never change once shipped: a new format would sync everything again
 as new records beside the old ones.
 
 - One account per Wise balance, in every profile the token can see: each
-  currency's STANDARD balance and each Jar (SAVINGS), with Wise's balance.
+  currency's STANDARD balance and each Jar (SAVINGS), with Wise's balance (D6).
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from typing import Any
 
 CONTRACT = 1
 #: A key of the manifest's `logos`: Securo serves the file from the package, so
-#: showing it never sends anyone's browser to a host the manifest doesn't declare.
+#: showing it never sends anyone's browser to a host the manifest doesn't declare (D14).
 INSTITUTION_LOGO = "wise"
 #: The contract takes at most 8 decimals; Securo stores 2 for money.
 _PLACES = Decimal("0.00000001")
@@ -29,7 +29,7 @@ def number(value: Decimal | int | str) -> str:
 
 
 def account_id(profile_id: int | str, balance_id: int | str) -> str:
-    """`wise:<profile>:<balance>`. Fixed once shipped."""
+    """`wise:<profile>:<balance>`. Fixed once shipped (D4)."""
     return f"wise:{profile_id}:{balance_id}"
 
 

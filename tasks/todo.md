@@ -254,11 +254,11 @@ An activity the plugin can't place on an account fails the sync with a clear mes
 - **DESIGN.md:** a numbered decisions table (D-numbers), like securo-ibkr's, covering the external-id formats, the activities-not-statements choice, conversions, pending handling and backfill.
 
 **Acceptance criteria:**
-- [ ] Every decision the code depends on has a D-number, and the code cites it.
-- [ ] The README contains no real data.
+- [x] Every decision the code depends on has a D-number, and the code cites it.
+- [x] The README contains no real data.
 
 **Verification:**
-- [ ] Manual check: the author reads both files.
+- [x] Manual check: the author reads both files.
 
 **Dependencies:** T9
 

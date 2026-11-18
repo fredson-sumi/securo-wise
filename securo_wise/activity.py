@@ -1,4 +1,4 @@
-"""One item of Wise's activities feed, parsed. See docs/wise-api.md for where each rule comes from.
+"""One item of Wise's activities feed, parsed (D5). See docs/wise-api.md for where each rule comes from.
 
 The feed gives amounts as display text ("1,204.85 USD", "<positive>+ 500 BRL</positive>").
 Parsing is strict: a format not seen before fails the sync with the format
@@ -17,7 +17,7 @@ from securo_wise.errors import WiseError
 _TAG = re.compile(r"</?[a-z]+>")
 _AMOUNT = re.compile(r"(?P<sign>\+\s*)?(?P<number>\d{1,3}(?:,\d{3})*(?:\.\d+)?)\s(?P<currency>[A-Z]{3})")
 
-#: Feed status -> contract status; None: the activity moved no money (yet), leave it out.
+#: Feed status -> contract status; None: the activity moved no money (yet), leave it out (D10).
 STATUS = {
     "COMPLETED": "posted",
     "IN_PROGRESS": "pending",
@@ -83,7 +83,7 @@ def parse(item: dict[str, Any]) -> Activity:
         secondary, secondary_in = parse_amount(secondary_text)
         if secondary_in != incoming:
             raise WiseError(f"Wise sent an activity whose two amounts disagree on direction: {masked(secondary_text)!r}.")
-    created = str(item.get("createdOn") or "")
+    created = str(item.get("createdOn") or "")  # the UTC day (D12)
     try:
         day = datetime.fromisoformat(created.replace("Z", "+00:00")).date()
     except ValueError:

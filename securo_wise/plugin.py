@@ -7,7 +7,7 @@ Securo to write as a connected bank. Securo keeps the returned `state` only
 once it has written the records, so a sync that fails reads the same
 activity again.
 
-`params["state"]` is what the last sync returned (`{}` the first time):
+`params["state"]` is what the last sync returned (`{}` the first time) (D11):
 
 - `profiles[<id>]`, one per Wise profile:
   - while its history is first read: `started` (when that began) and
@@ -17,7 +17,7 @@ activity again.
     how pending activity that completed or was cancelled is seen again.
 - `pending`: transactions sent as pending, by external id, as
   `[account, type, currency, description]`, so one Wise cancels can be
-  sent again as a posted zero (the contract has no way to delete).
+  sent again as a posted zero (the contract has no way to delete) (D10).
 """
 from __future__ import annotations
 
@@ -45,7 +45,7 @@ def token(context: Any) -> str:
     """The token from the connection's secrets, or `NeedsAuth` saying what is wrong with it."""
     value = str((getattr(context, "secrets", None) or {}).get("token") or "").strip()
     if not value:
-        raise NeedsAuth("The Wise API token is missing.")
+        raise NeedsAuth("The Wise API token is missing.")  # the only credential (D1)
     if len(value) > MAX_TOKEN_LENGTH or any(ch.isspace() for ch in value):
         raise NeedsAuth("That doesn't look like a Wise API token: paste the token alone.")
     return value

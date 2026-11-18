@@ -1,0 +1,55 @@
+{
+  "_comment": "Made up (D3): every id, name and amount here is invented. Shapes follow docs/wise-api.md, which records what Wise returned for a real account. Keys are request paths; a value with only `_status` is that HTTP error.",
+
+  "/v2/profiles": [
+    {"id": 10000001, "type": "PERSONAL", "fullName": "Ana Example", "currentState": "VISIBLE", "createdAt": "2026-06-01T12:00:00"},
+    {"id": 10000002, "type": "BUSINESS", "fullName": "Example Studio LLC", "businessName": "Example Studio LLC", "currentState": "VISIBLE", "createdAt": "2026-06-01T12:00:00"}
+  ],
+
+  "/v4/profiles/10000001/balances?types=STANDARD,SAVINGS": [
+    {"id": 50000011, "currency": "BRL", "amount": {"value": 0, "currency": "BRL"}, "reservedAmount": {"value": 0, "currency": "BRL"}, "cashAmount": {"value": 0, "currency": "BRL"}, "totalWorth": {"value": 0, "currency": "BRL"}, "type": "STANDARD", "name": null, "icon": null, "investmentState": "NOT_INVESTED", "creationTime": "2026-08-03T14:00:00.000000Z", "modificationTime": "2026-08-03T14:00:00.000000Z", "visible": true, "primary": true, "groupId": null, "recipientId": 70000011},
+    {"id": 50000012, "currency": "USD", "amount": {"value": 395.15, "currency": "USD"}, "reservedAmount": {"value": 0, "currency": "USD"}, "cashAmount": {"value": 395.15, "currency": "USD"}, "totalWorth": {"value": 395.15, "currency": "USD"}, "type": "STANDARD", "name": null, "icon": null, "investmentState": "NOT_INVESTED", "creationTime": "2026-08-03T14:00:00.000000Z", "modificationTime": "2026-10-20T09:00:00.000000Z", "visible": true, "primary": true, "groupId": null, "recipientId": 70000012}
+  ],
+
+  "/v4/profiles/10000002/balances?types=STANDARD,SAVINGS": [
+    {"id": 50000021, "currency": "USD", "amount": {"value": 1101.98, "currency": "USD"}, "reservedAmount": {"value": 0, "currency": "USD"}, "cashAmount": {"value": 1101.98, "currency": "USD"}, "totalWorth": {"value": 1101.98, "currency": "USD"}, "type": "STANDARD", "name": null, "icon": null, "investmentState": "NOT_INVESTED", "creationTime": "2026-06-02T10:00:00.000000Z", "modificationTime": "2026-11-10T16:00:00.000000Z", "visible": true, "primary": true, "groupId": null, "recipientId": 70000021},
+    {"id": 50000022, "currency": "BRL", "amount": {"value": 380, "currency": "BRL"}, "reservedAmount": {"value": 0, "currency": "BRL"}, "cashAmount": {"value": 380, "currency": "BRL"}, "totalWorth": {"value": 380, "currency": "BRL"}, "type": "STANDARD", "name": null, "icon": null, "investmentState": "NOT_INVESTED", "creationTime": "2026-06-02T10:00:00.000000Z", "modificationTime": "2026-08-12T10:00:00.000000Z", "visible": true, "primary": true, "groupId": null, "recipientId": 70000022},
+    {"id": 50000023, "currency": "EUR", "amount": {"value": 0, "currency": "EUR"}, "reservedAmount": {"value": 0, "currency": "EUR"}, "cashAmount": {"value": 0, "currency": "EUR"}, "totalWorth": {"value": 0, "currency": "EUR"}, "type": "STANDARD", "name": null, "icon": null, "investmentState": "NOT_INVESTED", "creationTime": "2026-06-02T10:00:00.000000Z", "modificationTime": "2026-06-02T10:00:00.000000Z", "visible": true, "primary": true, "groupId": null, "recipientId": 70000023}
+  ],
+
+  "/v1/profiles/10000001/activities?size=100": {
+    "cursor": null,
+    "activities": [
+      {"id": "activity-0001", "type": "TRANSFER", "resource": {"type": "TRANSFER", "id": "90000004"}, "title": "<strong>Example Landlord LLC</strong>", "description": "Sent", "primaryAmount": "1,200 USD", "secondaryAmount": "1,204.85 USD", "status": "COMPLETED", "createdOn": "2026-10-20T09:00:00.000Z", "updatedOn": "2026-10-20T09:00:00.000Z"},
+      {"id": "activity-0002", "type": "TRANSFER", "resource": {"type": "TRANSFER", "id": "90000003"}, "title": "<strong>Example Studio LLC</strong>", "description": "", "primaryAmount": "<positive>+ 1,600 USD</positive>", "secondaryAmount": "", "status": "COMPLETED", "createdOn": "2026-10-19T15:30:00.000Z", "updatedOn": "2026-10-19T15:30:00.000Z"}
+    ]
+  },
+
+  "/v1/profiles/10000002/activities?size=100": {
+    "cursor": null,
+    "activities": [
+      {"id": "activity-0003", "type": "CARD_PAYMENT", "resource": {"type": "CARD_TRANSACTION", "id": "80000001"}, "title": "<strong>Example Coffee</strong>", "description": "", "primaryAmount": "42.90 USD", "secondaryAmount": "", "status": "COMPLETED", "createdOn": "2026-11-10T16:00:00.000Z", "updatedOn": "2026-11-10T16:00:00.000Z"},
+      {"id": "activity-0004", "type": "TRANSFER", "resource": {"type": "TRANSFER", "id": "90000005"}, "title": "<strong>Example Client Inc.</strong>", "description": "", "primaryAmount": "<positive>+ 3,250 USD</positive>", "secondaryAmount": "", "status": "COMPLETED", "createdOn": "2026-11-03T12:00:00.000Z", "updatedOn": "2026-11-03T12:00:00.000Z"},
+      {"id": "activity-0005", "type": "TRANSFER", "resource": {"type": "TRANSFER", "id": "90000003"}, "title": "<strong>Ana Example</strong>", "description": "Sent", "primaryAmount": "1,600 USD", "secondaryAmount": "", "status": "COMPLETED", "createdOn": "2026-10-19T15:30:00.000Z", "updatedOn": "2026-10-19T15:30:00.000Z"},
+      {"id": "activity-0006", "type": "TRANSFER", "resource": {"type": "TRANSFER", "id": "90000002"}, "title": "<strong>Example Supplier Ltda</strong>", "description": "Sent", "primaryAmount": "2,731.50 BRL", "secondaryAmount": "505.12 USD", "status": "COMPLETED", "createdOn": "2026-08-12T10:00:00.000Z", "updatedOn": "2026-08-12T10:00:00.000Z"},
+      {"id": "activity-0007", "type": "BANK_DETAILS_ORDER", "resource": {"type": "BANK_DETAILS_ORDER", "id": "60000001"}, "title": "For <strong>your account details</strong>", "description": "", "primaryAmount": "120 BRL", "secondaryAmount": "", "status": "COMPLETED", "createdOn": "2026-06-05T10:00:00.000Z", "updatedOn": "2026-08-10T10:00:00.000Z"},
+      {"id": "activity-0008", "type": "BALANCE_DEPOSIT", "resource": {"type": "TRANSFER", "id": "90000001"}, "title": "To <strong>BRL</strong>", "description": "Added", "primaryAmount": "<positive>+ 500 BRL</positive>", "secondaryAmount": "", "status": "COMPLETED", "createdOn": "2026-08-01T10:00:00.000Z", "updatedOn": "2026-08-01T10:00:00.000Z"}
+    ]
+  },
+
+  "/v1/transfers/90000001": {"id": 90000001, "user": 30000001, "targetAccount": 70000022, "sourceAccount": null, "quote": null, "quoteUuid": "00000000-0000-4000-8000-000000000001", "status": "outgoing_payment_sent", "reference": "", "rate": 1.0, "created": "2026-08-01 10:00:00", "business": 40000001, "transferRequest": null, "details": {"reference": ""}, "hasActiveIssues": false, "sourceCurrency": "BRL", "sourceValue": 500.0, "targetCurrency": "BRL", "targetValue": 500.0, "customerTransactionId": "00000000-0000-4000-9000-000000000001"},
+  "/v1/transfers/90000002": {"id": 90000002, "user": 30000001, "targetAccount": 70000099, "sourceAccount": null, "quote": null, "quoteUuid": "00000000-0000-4000-8000-000000000002", "status": "outgoing_payment_sent", "reference": "Invoice 12", "rate": 5.463, "created": "2026-08-12 10:00:00", "business": 40000001, "transferRequest": null, "details": {"reference": "Invoice 12"}, "hasActiveIssues": false, "sourceCurrency": "USD", "sourceValue": 500.0, "targetCurrency": "BRL", "targetValue": 2731.5, "customerTransactionId": "00000000-0000-4000-9000-000000000002"},
+  "/v1/transfers/90000003": {"id": 90000003, "user": 30000001, "targetAccount": 70000012, "sourceAccount": null, "quote": null, "quoteUuid": "00000000-0000-4000-8000-000000000003", "status": "outgoing_payment_sent", "reference": "", "rate": 1.0, "created": "2026-10-19 15:30:00", "business": 40000001, "transferRequest": null, "details": {"reference": ""}, "hasActiveIssues": false, "sourceCurrency": "USD", "sourceValue": 1600.0, "targetCurrency": "USD", "targetValue": 1600.0, "customerTransactionId": "00000000-0000-4000-9000-000000000003"},
+  "/v1/transfers/90000004": {"id": 90000004, "user": 30000001, "targetAccount": 70000098, "sourceAccount": null, "quote": null, "quoteUuid": "00000000-0000-4000-8000-000000000004", "status": "outgoing_payment_sent", "reference": "Rent", "rate": 1.0, "created": "2026-10-20 09:00:00", "business": null, "transferRequest": null, "details": {"reference": "Rent"}, "hasActiveIssues": false, "sourceCurrency": "USD", "sourceValue": 1200.0, "targetCurrency": "USD", "targetValue": 1200.0, "customerTransactionId": "00000000-0000-4000-9000-000000000004"},
+  "/v1/transfers/90000005": {"_status": 403},
+
+  "/v3/profiles/10000002/quotes/00000000-0000-4000-8000-000000000002": {"id": "00000000-0000-4000-8000-000000000002", "sourceCurrency": "USD", "targetCurrency": "BRL", "sourceAmount": 505.12, "rate": 5.463, "payOut": "BANK_TRANSFER", "preferredPayIn": "BALANCE", "paymentOptions": [
+    {"payIn": "BANK_TRANSFER", "payOut": "BANK_TRANSFER", "sourceAmount": 506.40, "targetAmount": 2731.5, "sourceCurrency": "USD", "targetCurrency": "BRL", "fee": {"total": 6.40}},
+    {"payIn": "BALANCE", "payOut": "BANK_TRANSFER", "sourceAmount": 505.12, "targetAmount": 2731.5, "sourceCurrency": "USD", "targetCurrency": "BRL", "fee": {"total": 5.12}}
+  ]},
+  "/v3/profiles/10000001/quotes/00000000-0000-4000-8000-000000000004": {"id": "00000000-0000-4000-8000-000000000004", "sourceCurrency": "USD", "targetCurrency": "USD", "sourceAmount": 1204.85, "rate": 1.0, "payOut": "BANK_TRANSFER", "preferredPayIn": "BALANCE", "paymentOptions": [
+    {"payIn": "BALANCE", "payOut": "BANK_TRANSFER", "sourceAmount": 1204.85, "targetAmount": 1200.0, "sourceCurrency": "USD", "targetCurrency": "USD", "fee": {"total": 4.85}}
+  ]},
+
+  "/v3/spend/profiles/10000002/cards": {"_status": 403}
+}

@@ -1,0 +1,21 @@
+{
+  "_comment": "Made up (D3). Shapes follow the sandbox findings in docs/wise-api.md: Jar moves, a conversion, and transfers that move no money. Amounts don't add up to the balances (the sandbox's didn't either).",
+
+  "balances": [
+    {"id": 51000001, "currency": "EUR", "amount": {"value": 310.5, "currency": "EUR"}, "type": "STANDARD", "name": null, "visible": true, "primary": true, "recipientId": 71000001},
+    {"id": 51000002, "currency": "USD", "amount": {"value": 54.62, "currency": "USD"}, "type": "STANDARD", "name": null, "visible": true, "primary": true, "recipientId": 71000002},
+    {"id": 51000003, "currency": "GBP", "amount": {"value": 880, "currency": "GBP"}, "type": "STANDARD", "name": null, "visible": true, "primary": true, "recipientId": 71000003},
+    {"id": 51000004, "currency": "EUR", "amount": {"value": 25, "currency": "EUR"}, "type": "SAVINGS", "name": "Holiday", "visible": true, "primary": false, "recipientId": null}
+  ],
+
+  "activities": [
+    {"id": "edge-0001", "type": "INTERBALANCE", "resource": {"type": "BALANCE_TRANSACTION", "id": "61000001"}, "title": "To <strong>Holiday</strong>", "description": "Moved", "primaryAmount": "40 EUR", "secondaryAmount": "", "status": "COMPLETED", "createdOn": "2026-11-18T21:20:00.000Z", "updatedOn": "2026-11-18T21:20:00.000Z"},
+    {"id": "edge-0002", "type": "INTERBALANCE", "resource": {"type": "BALANCE_TRANSACTION", "id": "61000002"}, "title": "To <strong>EUR</strong>", "description": "Moved", "primaryAmount": "15 EUR", "secondaryAmount": "", "status": "COMPLETED", "createdOn": "2026-11-18T21:21:00.000Z", "updatedOn": "2026-11-18T21:21:00.000Z"},
+    {"id": "edge-0003", "type": "INTERBALANCE", "resource": {"type": "BALANCE_TRANSACTION", "id": "61000003"}, "title": "To <strong>USD</strong>", "description": "Moved", "primaryAmount": "54.62 USD", "secondaryAmount": "50 EUR", "status": "COMPLETED", "createdOn": "2026-11-18T21:19:00.000Z", "updatedOn": "2026-11-18T21:19:00.000Z"},
+    {"id": "edge-0004", "type": "INTERBALANCE", "resource": {"type": "BALANCE_TRANSACTION", "id": "61000004"}, "title": "To <strong>EUR</strong>", "description": "Moved", "primaryAmount": "116.41 EUR", "secondaryAmount": "100 GBP", "status": "COMPLETED", "createdOn": "2026-11-18T21:18:00.000Z", "updatedOn": "2026-11-18T21:18:00.000Z"},
+    {"id": "edge-0005", "type": "TRANSFER", "resource": {"type": "TRANSFER", "id": "91000001"}, "title": "<strong>Test Recipient</strong>", "description": "Waiting for you to pay", "primaryAmount": "21 GBP", "secondaryAmount": "21.48 GBP", "status": "REQUIRES_ATTENTION", "createdOn": "2026-11-18T21:29:00.000Z", "updatedOn": "2026-11-18T21:29:00.000Z"},
+    {"id": "edge-0006", "type": "TRANSFER", "resource": {"type": "TRANSFER", "id": "91000002"}, "title": "<strong>Test Recipient</strong>", "description": "Sending paused", "primaryAmount": "33 GBP", "secondaryAmount": "33.52 GBP", "status": "REQUIRES_ATTENTION", "createdOn": "2026-11-18T21:29:00.000Z", "updatedOn": "2026-11-18T21:30:00.000Z"},
+    {"id": "edge-0007", "type": "TRANSFER", "resource": {"type": "TRANSFER", "id": "91000003"}, "title": "<strong>Test Recipient</strong>", "description": "Cancelled", "primaryAmount": "44 GBP", "secondaryAmount": "44.55 GBP", "status": "CANCELLED", "createdOn": "2026-11-18T21:29:00.000Z", "updatedOn": "2026-11-18T21:31:00.000Z"},
+    {"id": "edge-0008", "type": "TRANSFER", "resource": {"type": "TRANSFER", "id": "91000004"}, "title": "<strong>Test Recipient</strong>", "description": "Sent", "primaryAmount": "1,250,000 GBP", "secondaryAmount": "1,250,412.80 GBP", "status": "COMPLETED", "createdOn": "2026-11-18T21:32:00.000Z", "updatedOn": "2026-11-18T21:32:00.000Z"}
+  ]
+}

@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+# Real Wise data must never be committed (D3): the sampler writes outside the repo.
+*.redacted.json
+local/
+# Dev-only dependency lock (pytest); the plugin ships no lockfile.
+uv.lock
